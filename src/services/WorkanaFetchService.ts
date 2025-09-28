@@ -1,8 +1,9 @@
 import { WorkanaJobRaw } from "../interface/workanaJobRaw";
 
 class WorkanaService {
-    async getJobsWorkana(): Promise<any> {
-        const res = await fetch("https://www.workana.com/pt/jobs?category=it-programming&language=pt&subcategory=web-development%2Cwordpress-1", {
+    async getJobsWorkana(page: number = 1): Promise<any> {
+        const url = `https://www.workana.com/pt/jobs?category=it-programming&language=pt&subcategory=web-development&page=${page}`;
+        const res = await fetch(url, {
             headers: {
                 "accept": "application/json, text/plain, */*",
                  "x-requested-with": "XMLHttpRequest", 
@@ -20,7 +21,6 @@ class WorkanaService {
         const jobs: WorkanaJobRaw[] = data.results.results;
 
 
-
         return jobs.map(job=> ({
             slug: job.slug,
             title: job.title.replace(/<\/?[^>]+(>|$)/g, ""),
@@ -28,7 +28,9 @@ class WorkanaService {
             url: `https://www.workana.com/job/${job.slug}`,
             authorName: job.authorName,
             skills: job.skills.map(s=> s.anchorText),
-            // aqui tem que terminar a tratagem do budget
+            budget: job.budget,
+            isUrgent: job.isUrgent,
+            postedDate: job.postedDate
         }))
     }
 }

@@ -6,4 +6,5 @@ export interface WorkanaJobRaw {
     skills: {anchorText: string}[];
     budget: string;
     isUrgent: boolean;
+    postedDate: Date;
 }

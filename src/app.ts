@@ -3,7 +3,6 @@ import routes from './routes';
 
 const app = express();
 
-//rotas 
 
 app.use("/", routes)
 

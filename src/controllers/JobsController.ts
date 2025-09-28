@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { workanaService } from "../services/JobFetchService";
+import { workanaService } from "../services/WorkanaFetchService";
 
 export class JobsController {
     async getJobs(req: Request, res: Response) {
