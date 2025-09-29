@@ -1,7 +1,9 @@
 import {MongoClient, Db, Collection} from 'mongodb';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 // ajustar para puxar do .env
-const MONGODB_URI = 'mongodb://localhost:27017/workana_jobs';
+const MONGODB_URI = process.env.DATABASE_URI!;
 const COLLECTION_NAME = 'vagas';
 
 class MongoDBService {
@@ -17,6 +19,10 @@ class MongoDBService {
         }
 
         try {
+            if(!MONGODB_URI) {
+                console.error('❌ ERRO CRÍTICO: Variável de ambiente DATABASE_URI não está definida.');
+                process.exit(1); 
+            }
             console.log('Tentando Conectar ao MongoDB...');
 
             this.client = new MongoClient(MONGODB_URI);

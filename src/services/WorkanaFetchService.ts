@@ -1,8 +1,8 @@
 import { WorkanaJobRaw } from "../interface/workanaJobRaw";
 
 class WorkanaService {
-    async getJobsWorkana(page: number = 1): Promise<any> {
-        const url = `https://www.workana.com/pt/jobs?category=it-programming&language=pt&subcategory=web-development&page=${page}`;
+    async getJobsWorkana(subcategory: string): Promise<any> {
+        const url = `https://www.workana.com/pt/jobs?category=it-programming&language=pt&subcategory=${subcategory}&page=1`;
         const res = await fetch(url, {
             headers: {
                 "accept": "application/json, text/plain, */*",

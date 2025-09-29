@@ -1,20 +1,37 @@
 import { workanaService } from "./WorkanaFetchService";
+import { jobsRepository } from "./JobRepository";
 
 const INTERVAL_MS = 5 * 60 * 1000;
 // adicionar iteração para a chamada dos jobs dentro da schedule
+
+const SUBCATEGORIES = [
+    'web-development',
+    'mobile-development',
+    'wordpress-1',
+    // Adicione mais slugs de subcateg
+]
+
 class JobSchedulerService {
     private intervalId: NodeJS.Timeout | null = null;
 
+    private isRunning: boolean = false;
+
     private async fetchAndProcessJobs() {
+
+        if(this.isRunning) {
+            console.log('[Scheduler] Ciclo anterior ainda em execução, Pulando este');
+            return
+        }
+        this.isRunning = true;
+        console.log(`[Scheduler] Iniciando novo ciclo de busca...`);
+
         try {
-            const MAX_PAGES = 5;
             
             let allJobs: any[] = [];
             
-            for(let page = 1; page <= MAX_PAGES; page++) {
-                console.log(`[Scheduler] Buscando vagas na página ${page}...`);
+            for(const subcategory of SUBCATEGORIES) {
 
-                const jobsFromPage = await workanaService.getJobsWorkana(page);
+                const jobsFromPage = await workanaService.getJobsWorkana(subcategory);
 
                 allJobs = allJobs.concat(jobsFromPage);
 
@@ -26,8 +43,13 @@ class JobSchedulerService {
 
             console.log(`[Scheduler] Encontradas ${allJobs.length} vagas.`);
 
+            // salvando
+            const savedCount = await jobsRepository.saveJobs(allJobs);
+
         } catch(error) {
             console.error(`[Scheduler] Erro durante a busca de vagas:`,  error);
+        } finally {
+                this.isRunning = false;
         }
     }
 
