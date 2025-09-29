@@ -7,11 +7,24 @@ class JobSchedulerService {
 
     private async fetchAndProcessJobs() {
         try {
-            console.log(`[Scheduler] Buscando novas vagas... (${new Date().toLocaleTimeString()})`);
+            const MAX_PAGES = 5;
+            
+            let allJobs: any[] = [];
+            
+            for(let page = 1; page <= MAX_PAGES; page++) {
+                console.log(`[Scheduler] Buscando vagas na página ${page}...`);
 
-            const jobs = await workanaService.getJobsWorkana();
+                const jobsFromPage = await workanaService.getJobsWorkana(page);
 
-            console.log(`[Scheduler] Encontradas ${jobs.length} vagas.`);
+                allJobs = allJobs.concat(jobsFromPage);
+
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            console.log(`[Scheduler] Processamento finalizado. Total de ${allJobs.length}`);
+
+
+            console.log(`[Scheduler] Encontradas ${allJobs.length} vagas.`);
 
         } catch(error) {
             console.error(`[Scheduler] Erro durante a busca de vagas:`,  error);
