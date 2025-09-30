@@ -37,12 +37,28 @@ class JobsRepository {
        
     }
  }
- public async getLatestJobs(): Promise<any[]> {
+ public async getRecentJobs(): Promise<any[]> {
     if(!mongoDBService.vagasCollection) {
+        console.warn('[Repository] Coleção indisponível para busca.');
         return [];
     }
-        return mongoDBService.vagasCollection.find({}).toArray();
- }
+    const twentyFourHourAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    console.log(`[Repository] Buscando vagas postadas desde ${twentyFourHourAgo.toISOString}`);
+
+    try {
+            return mongoDBService.vagasCollection
+                .find({
+                    postedDate: {$gte: twentyFourHourAgo}
+                })
+                
+                .sort({ postedDate: -1 }) 
+                .toArray();
+        } catch(error) {
+            console.error('[Repository] Erro ao buscar vagas recentes:', error); 
+            return [];
+        }
+    }
  public getLatestUpdate(): Date | null {
     return this.lastUpdated;
  }

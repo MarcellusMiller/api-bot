@@ -1,13 +1,23 @@
 import { Request, Response } from "express";
-import { workanaService } from "../services/WorkanaFetchService";
+import { jobsRepository } from "../services/JobRepository";
 
 export class JobsController {
-    async getJobs(req: Request, res: Response) {
+    async getJobs(req: Request, res: Response): Promise<any> {
         try {
-            const jobs = await workanaService.getJobsWorkana();
-            return res.json(jobs);
-        } catch (error: any) {
-            return res.status(500).json({error: error.message});
+            const jobs = await jobsRepository.getRecentJobs();
+
+            const lastUpdate = jobsRepository.getRecentJobs();
+
+            return res.status(200).json({
+                count: jobs.length,
+                lastUpdate: lastUpdate,
+                data: jobs,
+            });
+        } catch (error) {
+            console.error('[JobsController] Erro de busca vagas:', error);
+            res.status(500).json({error: 'Falha ao buscar vagas no banco de dados.'});
         }
     }
 }
+
+export const jobsController = new JobsController();

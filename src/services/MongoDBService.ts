@@ -14,7 +14,7 @@ class MongoDBService {
 
     public async connect(): Promise<void> {
         if (this.isConnected && this.vagasCollection) {
-            console.log('MongoDB jpa está conectadoi e pronto')
+            console.log('MongoDB ja está conectado e pronto')
             return
         }
 
@@ -26,11 +26,13 @@ class MongoDBService {
             console.log('Tentando Conectar ao MongoDB...');
 
             this.client = new MongoClient(MONGODB_URI);
+
             await this.client.connect();
 
             this.db = this.client.db();
             this.vagasCollection = this.db.collection(COLLECTION_NAME);
 
+            await this.vagasCollection.createIndex({ slug: 1 }, { unique: true });
             this.isConnected = true;
 
             console.log('MongoDB conectado cria');
