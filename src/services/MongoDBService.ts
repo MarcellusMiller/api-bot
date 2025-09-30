@@ -3,8 +3,8 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 // ajustar para puxar do .env
-const MONGODB_URI = process.env.DATABASE_URI!;
-const COLLECTION_NAME = 'vagas';
+const MONGODB_URI = process.env.DATABASE_URI;
+const COLLECTION_NAME = process.env.DATABASE_COLLECTION!;
 
 class MongoDBService {
     private client: MongoClient | null = null;
@@ -42,3 +42,4 @@ class MongoDBService {
 }
 
 export const mongoDBService = new MongoDBService();
+
