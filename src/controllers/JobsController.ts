@@ -6,11 +6,11 @@ export class JobsController {
         try {
             const jobs = await jobsRepository.getRecentJobs();
 
-            const lastUpdate = jobsRepository.getRecentJobs();
+            // const lastUpdate = jobsRepository.getRecentJobs();
 
             return res.status(200).json({
                 count: jobs.length,
-                lastUpdate: lastUpdate,
+                // lastUpdate: lastUpdate,
                 data: jobs,
             });
         } catch (error) {

@@ -55,12 +55,18 @@ class JobPosterService {
             } else {
                 console.error(`[BOT] Canal com ID ${DISCORD_CHANNEL_ID} não encontrado`);
             }
-        } catch(error) {
-            console.error('[BOT] Erro ao postas/buscar vagas  Verifique se o seu backend está rodando:', error);
+        } catch(error: any) {
+        if (axios.isAxiosError(error)) {
+            console.error(`[BOT] ❌ ERRO FATAL DE CONEXÃO: ${error.message}`);
+            console.error(`[BOT] 🎯 Código de Status do Axios: ${error.response?.status} (${error.response?.statusText})`);
+            console.error(`[BOT] 💡 Verifique se a URL ${BACKEND_URL}/jobs funciona no seu navegador.`);
+        } else {
+            console.error('[BOT] ❌ Erro Desconhecido:', error);
         }
     }
+    }
     private scheduleJobPosting() {
-        const INTERVAL_MS = 6 * 60 * 60 * 1000; // 60 horas
+        const INTERVAL_MS = 6 * 60 * 60 * 1000; // 6 horas
 
         this.postRecentJobs();
 

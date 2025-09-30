@@ -44,14 +44,11 @@ class JobsRepository {
     }
     const twentyFourHourAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-    console.log(`[Repository] Buscando vagas postadas desde ${twentyFourHourAgo.toISOString}`);
+    console.log(`[Repository] Buscando vagas postadas desde ${twentyFourHourAgo.toISOString()}`);
 
     try {
-            return mongoDBService.vagasCollection
-                .find({
-                    postedDate: {$gte: twentyFourHourAgo}
-                })
-                
+            return await mongoDBService.vagasCollection
+                .find({})            
                 .sort({ postedDate: -1 }) 
                 .toArray();
         } catch(error) {
